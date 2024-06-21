@@ -2,7 +2,8 @@ import { ReactElement } from "react"
 import { FormContainer, FormDivStyle , FormLabelStyle } from "./styles"
 
 type Props = {
-    children?: ReactElement[] | ReactElement | String
+    children?: ReactElement[] | ReactElement | string
+    htmlFor?: string
 }
 
 export const FormStyling = (props: Props) => (
@@ -14,6 +15,6 @@ export const FormDiv = (props: Props) => (
 )
 
 export const FormLabel = (props: Props) => (
-    <FormLabelStyle>{props.children}</FormLabelStyle>
+    <FormLabelStyle htmlFor={props.htmlFor}>{props.children}</FormLabelStyle>
 )
 

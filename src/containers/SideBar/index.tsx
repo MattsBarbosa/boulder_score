@@ -25,10 +25,10 @@ function SideBar() {
     return(
         <aside>
             <SidebarContainer>
-                <Button backgroundColor="primary" onClick={AddBoulder}>Add Boulder</Button>
-                <Button backgroundColor="primary" onClick={AddAtleta}>Add Atleta</Button>
-                <Button backgroundColor="primary" onClick={ListaAtletas}>Lista de Atletas</Button>
-                <Button backgroundColor="primary" onClick={ListaBoulders}>Lista de Boulders</Button>
+                <Button $bgcolor="primary" onClick={AddBoulder}>Add Boulder</Button>
+                <Button $bgcolor="primary" onClick={AddAtleta}>Add Atleta</Button>
+                <Button $bgcolor="primary" onClick={ListaAtletas}>Lista de Atletas</Button>
+                <Button $bgcolor="primary" onClick={ListaBoulders}>Lista de Boulders</Button>
             </SidebarContainer>
         </aside>
     )

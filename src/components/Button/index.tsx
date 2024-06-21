@@ -1,15 +1,15 @@
 import { Button as ButtonStyle, FormButtonStyle } from './styles'
 
 export type Props = {
-    onClick?: () => void
+    onClick?: (e: any) => void
     children: string
-    backgroundColor?: 'primary' | 'secondary' | 'save' | 'edit' | 'delete'
+    $bgcolor?: 'primary' | 'secondary' | 'save' | 'edit' | 'delete'
 }
 
-export const Button = ({children, backgroundColor = 'primary', onClick}: Props) => (
-    <ButtonStyle backgroundColor={backgroundColor} onClick={onClick}>{children}</ButtonStyle>
+export const Button = ({children, $bgcolor = 'primary', onClick}: Props) => (
+    <ButtonStyle $bgcolor={$bgcolor} onClick={onClick}>{children}</ButtonStyle>
 )
 
-export const FormButton = ({children, backgroundColor = 'primary', onClick}: Props) => (
-    <FormButtonStyle backgroundColor={backgroundColor} onClick={onClick}>{children}</FormButtonStyle>
+export const FormButton = ({children, $bgcolor = 'primary', onClick}: Props) => (
+    <FormButtonStyle $bgcolor={$bgcolor} onClick={onClick}>{children}</FormButtonStyle>
 )

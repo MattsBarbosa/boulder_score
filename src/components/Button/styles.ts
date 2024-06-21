@@ -12,7 +12,7 @@ export const Button = styled.button<Props>`
     width: 100%;
     color: #f1f2f6;
     background-color: ${(props) => {
-        switch(props.backgroundColor) {
+        switch(props.$bgcolor) {
             case 'primary':
                 return colors.primary;
             case 'secondary':
