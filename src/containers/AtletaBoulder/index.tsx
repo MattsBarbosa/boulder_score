@@ -6,6 +6,7 @@ import List from "../../components/List";
 import ListItem from "../../components/ListItem";
 import { getAtleta } from "../../services/AtletaService";
 import { Button } from "../../components/Button";
+import { getBoulder } from "../../services/BoulderService";
 
 interface AtletaBoulderProps {
     id: string
@@ -15,6 +16,13 @@ interface AtletaBoulderProps {
     tentativas: number
     pontuacao: number
     encadenado: boolean
+}
+
+interface Boulder {
+    numero: number
+    pontuacaoPrimeiraTentativa: number
+    pontuacaoSegundaTentativa: number
+    pontuacaoPadrao: number
 }
 
 function AtletaBoulder() {
@@ -59,18 +67,40 @@ function AtletaBoulder() {
             ))
     }
 
-    function addSend(atletaBoulderId: string) {
-        recordSend(atletaBoulderId)
-
-        setAtletaBoulders((boulders) => 
-            boulders.map((b) =>
-                b.id === atletaBoulderId
-                ? {...b, encadenado: true}
-                : b
-            ))
+    const calculateScore = (tentativas: number, boulder: Boulder): number => {
+        if (tentativas === 1) return boulder.pontuacaoPrimeiraTentativa;
+        if (tentativas === 2) return boulder.pontuacaoSegundaTentativa;
+        return boulder.pontuacaoPadrao;
     }
 
+    async function addSend(boulderAtletaId: string, boulderId: string) {
+        recordSend(boulderAtletaId)
 
+        try {
+            const response = await getBoulder(boulderId);
+            const fetchedBoulder: Boulder = {
+                numero: response.data.numero,
+                pontuacaoPrimeiraTentativa: response.data.pontuacaoPrimeiraTentativa,
+                pontuacaoSegundaTentativa: response.data.pontuacaoSegundaTentativa,
+                pontuacaoPadrao: response.data.pontuacaoPadrao
+            };
+
+            setAtletaBoulders((boulders) =>
+                boulders.map((b) =>
+                b.id === boulderAtletaId
+                    ? {
+                        ...b,
+                        tentativas: b.tentativas + 1,
+                        encadenado: true,
+                        pontuacao: calculateScore(b.tentativas + 1, fetchedBoulder)
+                    }
+                    : b
+                )
+            );
+            } catch (error) {
+            console.error('Error fetching boulder:', error);
+            }
+    }
 
     return (
         <>
@@ -94,7 +124,7 @@ function AtletaBoulder() {
                             <></>
                             : <>
                             <Button onClick={() => addAttempt(boulder['id'])}> +1 tentativa</Button>
-                            <Button onClick={() => addSend(boulder['id'])}>Encadenou</Button>
+                            <Button onClick={() => addSend(boulder['id'],boulder['boulderId'])}>Encadenou</Button>
                             </>  
                         }
                     </div>

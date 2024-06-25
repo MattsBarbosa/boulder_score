@@ -2,19 +2,23 @@ import { useEffect, useState } from "react"
 import List from "../../components/List"
 import ListItem from "../../components/ListItem"
 import { Title } from "../../components/Title/styles"
-import { deleteBoulder, getAllBoulders } from "../../services/BoulderService"
-import { Button } from "../../components/Button"
+import { assignBouldersToAtletas, deleteBoulder, getAllBoulders } from "../../services/BoulderService"
 import { useNavigate } from "react-router-dom"
+import { Button } from "../../components/Button"
 
 function ListBoulders() {
 
     const [boulders, setBoulders] = useState([])
+    const [bouldersIds, setBouldersIds] = useState([])
 
     const navigator = useNavigate();
 
     useEffect(() => {
         getAllBouldersFromApi()
-    }, [])
+
+        const ids = boulders.map(boulder => boulder['id'])
+        setBouldersIds(ids)
+    }, [boulders])
 
     function getAllBouldersFromApi() {
         getAllBoulders().then((response) => {
@@ -39,9 +43,14 @@ function ListBoulders() {
         navigator("")
     }
 
+    function AssignAllBoulders(bouldersIds: never[]) {
+        assignBouldersToAtletas(bouldersIds)
+    }
+
     return(
         <>
         <Title>Lista de Boulders</Title>
+        <Button onClick={() => AssignAllBoulders(bouldersIds)}>Assign All Boulders</Button>
         <List>
         {   
             boulders.map(boulder =>
