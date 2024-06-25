@@ -1,7 +1,8 @@
+import { ReactElement } from 'react'
 import { Title as TitleStyle } from './styles'
 
 export type Props = {
-    children: string
+    children: string | ReactElement | any[]
     fontSize?: number
 }
 

@@ -2,12 +2,20 @@ import { Title } from '../../components/Title/styles'
 import List from '../../components/List';
 import ListItem from '../../components/ListItem';
 import { useState, useEffect } from 'react';
-import { getAllAtletas } from '../../services/AtletaService'
+import { deleteAtleta, getAllAtletas } from '../../services/AtletaService'
+import { useNavigate } from 'react-router-dom';
+import { Button } from '../../components/Button';
 
 
 function ListAtletas() {
 
     const [atletas, setAtletas] = useState([])
+
+    const navigator = useNavigate();
+
+    const AtletaBoulder = (atletaId: string) => {
+        navigator(`/atleta-boulder/${atletaId}`)
+    }
 
     useEffect(() => {
         getAllAtletasFromApi()
@@ -21,7 +29,23 @@ function ListAtletas() {
             console.error(error)
         })
     }
+
+    //Buttons Functions
+
+    function editAtleta(atletaId: string) {
+        navigator(`/edit-atleta/${atletaId}`)
+    }
     
+    function removeAtleta(ateltaId: string) {
+        deleteAtleta(ateltaId)
+
+        setAtletas((atletas) => 
+        atletas.filter((a) => a['id'] !== ateltaId)
+        )
+
+        navigator("")
+    }
+
     return(
         <>
         <Title>Lista de Atletas</Title>
@@ -29,12 +53,16 @@ function ListAtletas() {
         {
             atletas.map(atleta => 
                 <ListItem key={atleta['id']}>
-                    <b>Número:</b>
-                    <p>{atleta['numero']}</p>
-                    <b>Nome:</b>
-                    <p>{atleta['nome']}</p>
-                    <b>Categoria:</b>
-                    <p>{atleta['categoria']}</p>
+                    <div onClick={() => AtletaBoulder(atleta['id'])}>
+                        <b>Número:</b>
+                        <p>{atleta['numero']}</p>
+                        <b>Nome:</b>
+                        <p>{atleta['nome']}</p>
+                        <b>Categoria:</b>
+                        <p>{atleta['categoria']}</p>
+                    </div>
+                    <Button $bgcolor='edit' onClick={() => editAtleta(atleta['id'])}>Editar</Button>
+                    <Button $bgcolor='delete' onClick={() => removeAtleta(atleta['id'])}>Deletar</Button>
                 </ListItem>
             )
         }

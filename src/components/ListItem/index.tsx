@@ -3,10 +3,11 @@ import { ListItem as ListItemStyle } from './styles'
 
 type Props = {
     children: ReactElement[] | ReactElement
+    onClick?: (e: any) => void 
 }
 
 const ListItem = (props: Props) => (
-    <ListItemStyle>{props.children}</ListItemStyle>
+    <ListItemStyle onClick={props.onClick}>{props.children}</ListItemStyle>
 )
 
 export default ListItem

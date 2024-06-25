@@ -4,7 +4,8 @@ import { FormDiv, FormStyling, FormLabel } from "../../components/FormContainer"
 
 import { FormInput } from "./styles";
 import { FormButton } from "../../components/Button";
-import { saveBoulder } from "../../services/BoulderService";
+import { getBoulder, saveBoulder, updateBoulder } from "../../services/BoulderService";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface Boulder {
     numero: number
@@ -15,6 +16,9 @@ interface Boulder {
 
 const BoulderComponent = () => {
 
+    const {id} = useParams()
+    const navigator = useNavigate()
+
     const [boulder, setBoulder] = useState<Boulder>({
         numero: 0,
         pontuacaoPrimeiraTentativa: 0,
@@ -23,8 +27,20 @@ const BoulderComponent = () => {
     })
 
     useEffect(() => {
-        //use for updating boulder
-    })
+        if(id){
+            getBoulder(id).then((response) => {
+                setBoulder({
+                    ...boulder,
+                    numero: response.data.numero,
+                    pontuacaoPrimeiraTentativa: response.data.pontuacaoPrimeiraTentativa,
+                    pontuacaoSegundaTentativa: response.data.pontuacaoSegundaTentativa,
+                    pontuacaoPadrao: response.data.pontuacaoPadrao
+                })
+            }).catch(error => {
+                console.error(error)
+            })
+        }
+    }, [id])
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -37,16 +53,23 @@ const BoulderComponent = () => {
     function saveOrUpdateBoulder(e: React.MouseEvent<HTMLButtonElement>){
         e.preventDefault();
 
-        saveBoulder(boulder).then((response) => {
-            console.log("Boulder salvo", response)
-        }).catch(error => {
-            console.error(error)
-        })
+        if(id){
+            updateBoulder(id,boulder).then((response) => {
+                navigator("/all-boulders")
+            }).catch(error => {
+                console.error(error)
+            })
+        }else {
+            saveBoulder(boulder).then((response) => {
+            }).catch(error => {
+                console.error(error)
+            })
+        }
     }
 
     return (
         <>
-            <Title>Add Boulder</Title>
+            <Title>{id ? "Edit Boulder" : "Add Boulder" }</Title>
             <FormStyling>
                 <form>
                     <FormDiv>

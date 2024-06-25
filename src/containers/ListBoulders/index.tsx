@@ -2,11 +2,15 @@ import { useEffect, useState } from "react"
 import List from "../../components/List"
 import ListItem from "../../components/ListItem"
 import { Title } from "../../components/Title/styles"
-import { getAllBoulders } from "../../services/BoulderService"
+import { deleteBoulder, getAllBoulders } from "../../services/BoulderService"
+import { Button } from "../../components/Button"
+import { useNavigate } from "react-router-dom"
 
 function ListBoulders() {
 
     const [boulders, setBoulders] = useState([])
+
+    const navigator = useNavigate();
 
     useEffect(() => {
         getAllBouldersFromApi()
@@ -19,6 +23,20 @@ function ListBoulders() {
         }).catch(error => {
             console.error(error)
         })
+    }
+
+    function editBoulder(boulderId: string) {
+        navigator(`/edit-boulder/${boulderId}`)
+    }
+
+    function removeBoulder(boulderId: string) {
+        deleteBoulder(boulderId)
+
+        setBoulders((boulders) => 
+            boulders.filter((b) => b['id'] !== boulderId)
+        )
+
+        navigator("")
     }
 
     return(
@@ -39,6 +57,8 @@ function ListBoulders() {
                         <br></br>
                         <li>Pontuação Padrão: {boulder['pontuacaoPadrao']}</li>
                     </ul>
+                    <Button $bgcolor='edit' onClick={() => editBoulder(boulder['id'])}>Editar</Button>
+                    <Button $bgcolor='delete' onClick={() => removeBoulder(boulder['id'])}>Deletar</Button>
                 </ListItem>
             )
         }
