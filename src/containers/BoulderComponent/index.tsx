@@ -1,14 +1,15 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import Title from "../../components/Title";
 import { FormDiv, FormStyling, FormLabel } from "../../components/FormContainer";
-
+import { toast } from 'react-toastify'
 import { FormInput } from "./styles";
 import { FormButton } from "../../components/Button";
 import { getBoulder, saveBoulder, updateBoulder } from "../../services/BoulderService";
 import { useNavigate, useParams } from "react-router-dom";
 
+
 interface Boulder {
-    numero: number
+    numero: number 
     pontuacaoPrimeiraTentativa: number
     pontuacaoSegundaTentativa: number
     pontuacaoPadrao: number
@@ -46,25 +47,38 @@ const BoulderComponent = () => {
         const { name, value } = e.target;
         setBoulder({
             ...boulder,
-            [name]: value
+            [name]: value === '' ? '' : Number(value)
         })
     }
 
-    function saveOrUpdateBoulder(e: React.MouseEvent<HTMLButtonElement>){
+    async function saveOrUpdateBoulder(e: React.MouseEvent<HTMLButtonElement>){
         e.preventDefault();
 
-        if(id){
-            updateBoulder(id,boulder).then((response) => {
-                navigator("/all-boulders")
-            }).catch(error => {
-                console.error(error)
-            })
-        }else {
-            saveBoulder(boulder).then((response) => {
-            }).catch(error => {
-                console.error(error)
-            })
+        try{
+            if(id){
+                await updateBoulder(id,boulder).then((response) => {
+                    toast.success("Boulder alterado com sucesso")
+                    navigator("/all-boulders")
+                }).catch(error => {
+                    console.error(error)
+                })
+            }else {
+                await saveBoulder(boulder).then((response) => {
+                    toast.success("Boulder salvo com sucesso")
+                }).catch(error => {
+                    console.error(error)
+                })
+            }
+        } catch(error) {
+            console.error(error)
         }
+
+        setBoulder({
+            numero: 0,
+            pontuacaoPrimeiraTentativa: 0,
+            pontuacaoSegundaTentativa: 0,
+            pontuacaoPadrao: 0
+        })
     }
 
     return (
@@ -78,7 +92,7 @@ const BoulderComponent = () => {
                         id="numero"
                         placeholder="0"
                         name="numero" 
-                        value={boulder.numero} 
+                        value={boulder.numero === 0 ? '' : boulder.numero} 
                         onChange={handleInputChange}/>
                     </FormDiv>
                     <FormDiv> 
@@ -89,7 +103,7 @@ const BoulderComponent = () => {
                         id="primeira"
                         placeholder="Primeira Tentativa"
                         name="pontuacaoPrimeiraTentativa"
-                        value={boulder.pontuacaoPrimeiraTentativa} 
+                        value={boulder.pontuacaoPrimeiraTentativa === 0 ? '' : boulder.pontuacaoPrimeiraTentativa} 
                         onChange={handleInputChange}/>
 
                         <FormLabel htmlFor="segunda">2ª</FormLabel>
@@ -97,7 +111,7 @@ const BoulderComponent = () => {
                         id="segunda"
                         placeholder="Segunda Tentativa"
                         name="pontuacaoSegundaTentativa"
-                        value={boulder.pontuacaoSegundaTentativa}
+                        value={boulder.pontuacaoSegundaTentativa === 0 ? '' : boulder.pontuacaoSegundaTentativa}
                         onChange={handleInputChange}/>
                         
                         <FormLabel htmlFor="padrao">Padrão</FormLabel>
@@ -105,11 +119,11 @@ const BoulderComponent = () => {
                         id="padrao"
                         placeholder="Pontuação Padrão"
                         name="pontuacaoPadrao"
-                        value={boulder.pontuacaoPadrao}
+                        value={boulder.pontuacaoPadrao === 0 ? '' : boulder.pontuacaoPadrao}
                         onChange={handleInputChange}/>  
                     </FormDiv>
                     <FormButton $bgcolor="save" onClick={saveOrUpdateBoulder}>Salvar</FormButton>
-                    <FormButton $bgcolor="delete">Cancelar</FormButton>
+                    <FormButton $bgcolor="delete" onClick={() => navigator("/all-boulders")}>Cancelar</FormButton>
                 </form>
             </FormStyling>
         </>

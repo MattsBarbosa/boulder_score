@@ -5,6 +5,7 @@ import { Title } from "../../components/Title/styles"
 import { assignBouldersToAtletas, deleteBoulder, getAllBoulders } from "../../services/BoulderService"
 import { useNavigate } from "react-router-dom"
 import { Button } from "../../components/Button"
+import { toast } from 'react-toastify'
 
 function ListBoulders() {
 
@@ -35,7 +36,7 @@ function ListBoulders() {
 
     function removeBoulder(boulderId: string) {
         deleteBoulder(boulderId)
-
+        toast.success("Boulder deletado com sucesso")
         setBoulders((boulders) => 
             boulders.filter((b) => b['id'] !== boulderId)
         )

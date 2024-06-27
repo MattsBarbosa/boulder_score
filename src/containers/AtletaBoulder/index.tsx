@@ -7,6 +7,7 @@ import ListItem from "../../components/ListItem";
 import { getAtleta } from "../../services/AtletaService";
 import { Button } from "../../components/Button";
 import { getBoulder } from "../../services/BoulderService";
+import { toast } from 'react-toastify'
 
 interface AtletaBoulderProps {
     id: string
@@ -56,37 +57,44 @@ function AtletaBoulder() {
 
     //Buttons Functions
 
-    function addAttempt(atletaBoulderId: string) {
-        recordAttempt(atletaBoulderId)
+    const addAttempt = async (atletaBoulderId: string) => {
+        
+        try{
+            await recordAttempt(atletaBoulderId)
 
-        setAtletaBoulders((boulders) => 
-            boulders.map((b) => 
-                b.id === atletaBoulderId
-                ? {...b, tentativas: b.tentativas + 1}
-                : b
+            setAtletaBoulders((boulders) => 
+                boulders.map((b) => 
+                    b.id === atletaBoulderId
+                    ? {...b, tentativas: b.tentativas + 1}
+                    : b
             ))
+            toast.success("Tentativa adicionada com sucesso")
+        } catch (error) {
+            console.error('Error recording attempt:', error)
+        }
     }
 
     const calculateScore = (tentativas: number, boulder: Boulder): number => {
+        console.log(tentativas)
         if (tentativas === 1) return boulder.pontuacaoPrimeiraTentativa;
         if (tentativas === 2) return boulder.pontuacaoSegundaTentativa;
         return boulder.pontuacaoPadrao;
     }
 
-    async function addSend(boulderAtletaId: string, boulderId: string) {
-        recordSend(boulderAtletaId)
-
+    const addSend = async (boulderAtletaId: string, boulderId: string) => {
+        
         try {
+        
             const response = await getBoulder(boulderId);
             const fetchedBoulder: Boulder = {
                 numero: response.data.numero,
                 pontuacaoPrimeiraTentativa: response.data.pontuacaoPrimeiraTentativa,
                 pontuacaoSegundaTentativa: response.data.pontuacaoSegundaTentativa,
                 pontuacaoPadrao: response.data.pontuacaoPadrao
-            };
+            }
 
-            setAtletaBoulders((boulders) =>
-                boulders.map((b) =>
+            setAtletaBoulders((boulders) => {
+                const updatedBoulders = boulders.map((b) =>
                 b.id === boulderAtletaId
                     ? {
                         ...b,
@@ -96,7 +104,9 @@ function AtletaBoulder() {
                     }
                     : b
                 )
-            );
+                return updatedBoulders
+            })
+            await recordSend(boulderAtletaId)
             } catch (error) {
             console.error('Error fetching boulder:', error);
             }
