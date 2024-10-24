@@ -8,8 +8,8 @@ export type Props = {
     disabled?: boolean
 }
 
-export const Button = ({children, $bgcolor = 'primary', onClick, type = 'button', disabled}: Props) => (
-    <ButtonStyle $bgcolor={$bgcolor} onClick={onClick} type={type}>{children}</ButtonStyle>
+export const Button = ({children, $bgcolor = 'primary', onClick, type = 'button', disabled }: Props) => (
+    <ButtonStyle $bgcolor={$bgcolor} onClick={onClick} type={type} >{children}</ButtonStyle>
 )
 
 export const FormButton = ({children, $bgcolor = 'primary', onClick, type = 'button', disabled}: Props) => (

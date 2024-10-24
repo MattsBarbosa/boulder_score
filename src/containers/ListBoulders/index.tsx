@@ -6,6 +6,7 @@ import { assignBouldersToAtletas, deleteBoulder, getAllBoulders } from "../../se
 import { useNavigate } from "react-router-dom"
 import { Button } from "../../components/Button"
 import { toast } from 'react-toastify'
+import { SmallButton } from "./styles"
 
 function ListBoulders() {
 
@@ -51,7 +52,7 @@ function ListBoulders() {
     return(
         <>
         <Title>Lista de Boulders</Title>
-        <Button onClick={() => AssignAllBoulders(bouldersIds)}>Assign All Boulders</Button>
+        <SmallButton $bgcolor="primary" onClick={() => AssignAllBoulders(bouldersIds)}>Assign All Boulders</SmallButton>
         <List>
         {   
             boulders.map(boulder =>
